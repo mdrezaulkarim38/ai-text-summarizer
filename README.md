@@ -136,12 +136,14 @@ These are the patterns that separate junior from senior engineering:
 
 ## 🗺️ Roadmap
 
-- [x] Solution structure & backend setup
-- [ ] Ollama + Semantic Kernel summarization service
-- [ ] REST + SSE endpoints
+- [x] Solution structure & backend setup (.NET 10, server/ + tests/)
+- [x] Ollama + Semantic Kernel summarization service (qwen3:8b)
+- [x] REST + SSE streaming endpoints (tested via Scalar UI)
+- [ ] FluentValidation request validation
+- [ ] Serilog structured logging + health checks
 - [ ] React 19 frontend with Bootstrap 5
-- [ ] Streaming UI + copy/download
-- [ ] Resilience, caching, rate limiting, tests
+- [ ] Resilience (Polly), caching, rate limiting
+- [ ] Unit + integration tests (70%+ coverage)
 - [ ] Docker Compose deployment
 - [ ] GitHub Actions CI/CD
 - [ ] Live deployment (Azure / Railway)
