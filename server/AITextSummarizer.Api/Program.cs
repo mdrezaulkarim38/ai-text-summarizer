@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Resilience;
+using Polly.Retry;
+using Polly.CircuitBreaker;
+using Polly.Timeout;
+using Polly;
 using AITextSummarizer.Core.Interfaces;
 using AITextSummarizer.Infrastructure.Services;
 using Microsoft.SemanticKernel;
@@ -20,6 +25,23 @@ builder.Services.AddOpenAIChatCompletion(
 );
 
 builder.Services.AddScoped<ISummarizationService, OllamaSummarizationService>();
+builder.Services.AddResiliencePipeline("ollama-summarize", pipeline =>
+{
+    pipeline.AddRetry(new RetryStrategyOptions
+    {
+        MaxRetryAttempts = 3,
+        Delay = TimeSpan.FromSeconds(2),
+        BackoffType = DelayBackoffType.Exponential,
+        UseJitter = true
+    })
+    .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    {
+        MinimumThroughput = 5,
+        FailureRatio = 0.5,
+        SamplingDuration = TimeSpan.FromSeconds(30),
+        BreakDuration = TimeSpan.FromSeconds(30)
+    }).AddTimeout(TimeSpan.FromSeconds(120));
+});
 
 var app = builder.Build();
 app.MapOpenApi();

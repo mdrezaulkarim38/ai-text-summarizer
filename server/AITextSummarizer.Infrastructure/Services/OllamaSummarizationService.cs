@@ -1,3 +1,5 @@
+using Polly;
+using Polly.Registry;
 using AITextSummarizer.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -12,20 +14,28 @@ public class OllamaSummarizationService : ISummarizationService
 {
     private readonly IChatCompletionService _chatCompletion;
     private readonly ILogger<OllamaSummarizationService> _logger;
+    private readonly ResiliencePipeline _pipeline;
     private readonly OllamaOptions _options;
 
-    public OllamaSummarizationService(Kernel kernel, IOptions<OllamaOptions> options, ILogger<OllamaSummarizationService> logger)
+    public OllamaSummarizationService(
+        Kernel kernel,
+        IOptions<OllamaOptions> options,
+        ILogger<OllamaSummarizationService> logger,
+        ResiliencePipelineProvider<string> pipelineProvider)
     {
         _chatCompletion = kernel.GetRequiredService<IChatCompletionService>();
         _options = options.Value;
         _logger = logger;
+        _pipeline = pipelineProvider.GetPipeline("ollama-summarize");
     }
 
     public async Task<SummarizeResponse> SummarizeAsync(SummarizeRequest request, CancellationToken ct = default)
     {
         var sw = Stopwatch.StartNew();
-        var reply = await _chatCompletion.GetChatMessageContentAsync(
-            new ChatHistory(BuildPrompt(request)), cancellationToken: ct);
+        var reply = await _pipeline.ExecuteAsync(async token =>
+            await _chatCompletion.GetChatMessageContentAsync(
+                new ChatHistory(BuildPrompt(request)), cancellationToken: token),
+            ct);
 
         sw.Stop();
         return new SummarizeResponse
