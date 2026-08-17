@@ -10,6 +10,7 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Resilience" Version="10.9.0" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.79.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.20" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
