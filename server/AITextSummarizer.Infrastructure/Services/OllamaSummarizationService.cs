@@ -32,18 +32,25 @@ public class OllamaSummarizationService : ISummarizationService
     public async Task<SummarizeResponse> SummarizeAsync(SummarizeRequest request, CancellationToken ct = default)
     {
         var sw = Stopwatch.StartNew();
+        _logger.LogInformation("Summarizing request: {OriginalWords} words, max {MaxLength}, format {Format}",
+            CountWords(request.Text), request.MaxLength, request.Format);
+
         var reply = await _pipeline.ExecuteAsync(async token =>
             await _chatCompletion.GetChatMessageContentAsync(
                 new ChatHistory(BuildPrompt(request)), cancellationToken: token),
             ct);
 
         sw.Stop();
+        var summary = reply.Content ?? string.Empty;
+        _logger.LogInformation("Summary generated: {SummaryWords} words in {ElapsedMs} ms",
+            CountWords(summary), sw.ElapsedMilliseconds);
+
         return new SummarizeResponse
         {
-            Summary = reply.Content ?? string.Empty,
+            Summary = summary,
             Model = _options.ModelName,
             OriginalWordCount = CountWords(request.Text),
-            SummaryWordCount = CountWords(reply.Content ?? string.Empty),
+            SummaryWordCount = CountWords(summary),
             ProcessingTimeMs = sw.ElapsedMilliseconds
         };
     }

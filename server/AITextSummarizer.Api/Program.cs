@@ -3,14 +3,22 @@ using Polly.Retry;
 using Polly.CircuitBreaker;
 using Polly.Timeout;
 using Polly;
+using AITextSummarizer.Api.Health;
 using AITextSummarizer.Core.Interfaces;
 using AITextSummarizer.Infrastructure.Services;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.SemanticKernel;
 using Scalar.AspNetCore;
-using AITextSummarizer.Api.Health;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
