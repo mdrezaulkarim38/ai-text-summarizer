@@ -7,10 +7,13 @@ using AITextSummarizer.Core.Interfaces;
 using AITextSummarizer.Infrastructure.Services;
 using Microsoft.SemanticKernel;
 using Scalar.AspNetCore;
+using AITextSummarizer.Api.Health;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
 builder.Services.AddOpenApi();
 
 builder.Services.Configure<OllamaOptions>(builder.Configuration.GetSection(OllamaOptions.SectionName));
@@ -43,10 +46,23 @@ builder.Services.AddResiliencePipeline("ollama-summarize", pipeline =>
     }).AddTimeout(TimeSpan.FromSeconds(120));
 });
 
+
+builder.Services.AddHttpClient<OllamaHealthCheck>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+});
+builder.Services.AddHealthChecks()
+    .AddCheck<OllamaHealthCheck>("ollama");
+
+
 var app = builder.Build();
 app.MapOpenApi();
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
 app.MapControllers();
-
+app.MapHealthChecks("/health");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Name == "ollama"
+});
 app.Run();
