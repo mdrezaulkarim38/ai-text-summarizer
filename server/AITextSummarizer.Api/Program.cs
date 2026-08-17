@@ -8,6 +8,8 @@ using AITextSummarizer.Core.Interfaces;
 using AITextSummarizer.Infrastructure.Services;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.SemanticKernel;
 using Scalar.AspNetCore;
 using Serilog;
@@ -23,6 +25,9 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
 builder.Services.AddOpenApi();
+
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.Configure<OllamaOptions>(builder.Configuration.GetSection(OllamaOptions.SectionName));
 

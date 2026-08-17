@@ -141,10 +141,12 @@ These are the patterns that separate junior from senior engineering:
 - [x] REST + SSE streaming endpoints (tested via Scalar UI)
 - [x] React 19 + TypeScript + Vite + Bootstrap 5 frontend
 - [x] UI: input → summarize → output with copy/download, streaming toggle, error handling
-- [ ] FluentValidation request validation
-- [ ] Serilog structured logging + health checks
+- [x] Resilience (Polly: retry, circuit breaker, timeout)
+- [x] Health checks (/health + /health/ready with Ollama readiness)
+- [x] Serilog structured logging
+- [x] FluentValidation request validation
+- [ ] Output caching + rate limiting
 - [ ] Example texts + dark mode + keyboard shortcuts
-- [ ] Resilience (Polly), caching, rate limiting
 - [ ] Unit + integration tests (70%+ coverage)
 - [ ] Docker Compose deployment
 - [ ] GitHub Actions CI/CD
