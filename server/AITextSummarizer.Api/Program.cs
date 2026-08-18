@@ -13,12 +13,17 @@ using FluentValidation.AspNetCore;
 using Microsoft.SemanticKernel;
 using Scalar.AspNetCore;
 using Serilog;
+using System.Threading.RateLimiting;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 50 * 1024;
+});
 
 builder.Host.UseSerilog();
 
@@ -67,12 +72,25 @@ builder.Services.AddHttpClient<OllamaHealthCheck>(client =>
 builder.Services.AddHealthChecks()
     .AddCheck<OllamaHealthCheck>("ollama");
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("per-ip", httpContext =>
+    RateLimitPartition.GetFixedWindowLimiter(partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown", factory: _ => new FixedWindowRateLimiterOptions
+    {
+        PermitLimit = 30,
+        Window = TimeSpan.FromMinutes(1),
+        QueueLimit = 2
+    })
+    );
+});
 
 var app = builder.Build();
 app.MapOpenApi();
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
 app.MapControllers();
+app.UseRateLimiter();
 app.MapHealthChecks("/health");
 app.MapHealthChecks("/health/ready", new HealthCheckOptions
 {
