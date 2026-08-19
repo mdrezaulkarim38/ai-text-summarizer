@@ -14,6 +14,7 @@ using Microsoft.SemanticKernel;
 using Scalar.AspNetCore;
 using Serilog;
 using System.Threading.RateLimiting;
+using AITextSummarizer.Api.Caching;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -85,12 +86,20 @@ builder.Services.AddRateLimiter(options =>
     );
 });
 
+builder.Services.AddOutputCache(options =>
+{
+    options.AddPolicy("summarize-post", policy =>
+        policy.AddPolicy<SummarizeCachePolicy>());
+});
+
+
 var app = builder.Build();
 app.MapOpenApi();
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRateLimiter();
+app.UseOutputCache();
 app.MapHealthChecks("/health");
 app.MapHealthChecks("/health/ready", new HealthCheckOptions
 {

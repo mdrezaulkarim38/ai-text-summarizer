@@ -2,17 +2,21 @@ using System.Text.Json;
 using AITextSummarizer.Core.Interfaces;
 using AITextSummarizer.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace AITextSummarizer.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("per-ip")]
 public class SummarizationController : ControllerBase
 {
     private readonly ISummarizationService _service;
 
     public SummarizationController(ISummarizationService service) => _service = service;
 
+    [OutputCache(PolicyName = "summarize-post")]
     [HttpPost]
     public async Task<ActionResult<SummarizeResponse>> Summarize(
         [FromBody] SummarizeRequest request, CancellationToken ct)
