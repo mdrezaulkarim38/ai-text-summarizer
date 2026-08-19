@@ -4,7 +4,4 @@
     <Project Path="server/AITextSummarizer.Core/AITextSummarizer.Core.csproj" />
     <Project Path="server/AITextSummarizer.Infrastructure/AITextSummarizer.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/AITextSummarizer.Tests/AITextSummarizer.Tests.csproj" />
-  </Folder>
 </Solution>

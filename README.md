@@ -51,8 +51,6 @@ ai-text-summarizer/
 │   ├── AITextSummarizer.Core/          # Domain models & interfaces
 │   └── AITextSummarizer.Infrastructure/# Semantic Kernel + Ollama implementation
 ├── client/                             # React 19 + TypeScript + Vite frontend
-├── tests/
-│   └── AITextSummarizer.Tests/         # Unit & integration tests
 └── README.md
 ```
 
@@ -129,7 +127,7 @@ These are the patterns that separate junior from senior engineering:
 
 ## 🗺️ Roadmap
 
-- [x] Solution structure & backend setup (.NET 10, server/ + tests/)
+- [x] Solution structure & backend setup (.NET 10, server/)
 - [x] Ollama + Semantic Kernel summarization service (qwen3:8b)
 - [x] REST + SSE streaming endpoints (tested via Scalar UI)
 - [x] React 19 + TypeScript + Vite + Bootstrap 5 frontend
@@ -142,7 +140,6 @@ These are the patterns that separate junior from senior engineering:
 - [x] Rate limiting (30 req/min per IP)
 - [x] Request size limit (50 KB)
 - [ ] Example texts + dark mode + keyboard shortcuts
-- [ ] Unit + integration tests (70%+ coverage)
 
 ---
 
