@@ -106,3 +106,5 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
     Predicate = check => check.Name == "ollama"
 });
 app.Run();
+
+public partial class Program { }

@@ -53,7 +53,6 @@ ai-text-summarizer/
 ├── client/                             # React 19 + TypeScript + Vite frontend
 ├── tests/
 │   └── AITextSummarizer.Tests/         # Unit & integration tests
-├── docker-compose.yml                  # One-command local setup
 └── README.md
 ```
 
@@ -71,7 +70,6 @@ ai-text-summarizer/
 | Resilience | Polly (retry, circuit breaker, timeout) |
 | Observability | Serilog structured logging, ASP.NET Health Checks |
 | API Quality | FluentValidation, rate limiting, output caching |
-| Deployment | Docker, Docker Compose |
 
 ---
 
@@ -100,12 +98,7 @@ npm install
 npm run dev
 ```
 
-**Or run everything with Docker:**
-```bash
-docker-compose up --build
-```
-
-Open http://localhost:3000 → paste text → get your summary.
+Open http://localhost:5173 → paste text → get your summary.
 
 ---
 
@@ -145,12 +138,11 @@ These are the patterns that separate junior from senior engineering:
 - [x] Health checks (/health + /health/ready with Ollama readiness)
 - [x] Serilog structured logging
 - [x] FluentValidation request validation
-- [ ] Output caching + rate limiting
+- [x] Output caching (custom policy, body-hash cache key, 10 min expiry)
+- [x] Rate limiting (30 req/min per IP)
+- [x] Request size limit (50 KB)
 - [ ] Example texts + dark mode + keyboard shortcuts
 - [ ] Unit + integration tests (70%+ coverage)
-- [ ] Docker Compose deployment
-- [ ] GitHub Actions CI/CD
-- [ ] Live deployment (Azure / Railway)
 
 ---
 
