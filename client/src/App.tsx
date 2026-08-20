@@ -15,8 +15,8 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [useStreaming, setUseStreaming] = useState(true);
   const [error, setError] = useState("");
-  const [darkMode, setDarkMode] = useState(() =>
-    localStorage.getItem("theme") === "dark",
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("theme") === "dark",
   );
 
   useEffect(() => {
@@ -26,17 +26,6 @@ function App() {
     );
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        handleSummarize();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  });
 
   const handleSummarize = async () => {
     if (!text.trim() || loading) return;
@@ -61,6 +50,17 @@ function App() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        handleSummarize();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
 
   return (
     <div className="container py-5" style={{ maxWidth: 860 }}>
