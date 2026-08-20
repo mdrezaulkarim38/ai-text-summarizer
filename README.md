@@ -139,7 +139,9 @@ These are the patterns that separate junior from senior engineering:
 - [x] Output caching (custom policy, body-hash cache key, 10 min expiry)
 - [x] Rate limiting (30 req/min per IP)
 - [x] Request size limit (50 KB)
-- [ ] Example texts + dark mode + keyboard shortcuts
+- [x] Example texts dropdown
+- [x] Dark mode toggle (persisted in localStorage)
+- [x] Ctrl+Enter keyboard shortcut
 
 ---
 
